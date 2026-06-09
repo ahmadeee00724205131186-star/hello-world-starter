@@ -6,6 +6,12 @@ export function MagicCursor() {
   const trail = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Skip the cursor effect entirely on touch / coarse-pointer devices —
+    // it's invisible there and just costs frames.
+    if (typeof window === "undefined") return;
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!fine) return;
+
     const canvas = trail.current!;
     const ctx = canvas.getContext("2d")!;
     let w = (canvas.width = window.innerWidth);
@@ -15,20 +21,21 @@ export function MagicCursor() {
 
     const particles: { x: number; y: number; vx: number; vy: number; life: number; max: number; size: number; hue: number }[] = [];
     let mx = w / 2, my = h / 2, lx = mx, ly = my;
+    const MAX_PARTICLES = 80;
 
     const onMove = (e: PointerEvent) => {
       mx = e.clientX; my = e.clientY;
       const dx = mx - lx, dy = my - ly;
       const dist = Math.hypot(dx, dy);
-      const count = Math.min(4, Math.floor(dist / 6));
-      for (let i = 0; i < count; i++) {
+      const count = Math.min(2, Math.floor(dist / 14));
+      for (let i = 0; i < count && particles.length < MAX_PARTICLES; i++) {
         particles.push({
           x: mx + (Math.random() - 0.5) * 4,
           y: my + (Math.random() - 0.5) * 4,
           vx: (Math.random() - 0.5) * 0.6,
           vy: (Math.random() - 0.5) * 0.6 - 0.3,
-          life: 0, max: 40 + Math.random() * 40,
-          size: 1 + Math.random() * 2.4,
+          life: 0, max: 36 + Math.random() * 28,
+          size: 1 + Math.random() * 2.0,
           hue: 35 + Math.random() * 20,
         });
       }
