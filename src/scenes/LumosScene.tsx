@@ -1,6 +1,6 @@
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, DepthOfField } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import { Sparkles, Environment } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
@@ -138,13 +138,13 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
   const allLit = lit.every(Boolean);
   const [line, setLine] = useState(0);
 
-  useEffect(() => {
-    if (!allLit) return;
-    const id = setInterval(() => setLine((n) => Math.min(n + 1, LUMOS_LINES.length - 1)), 2400);
-    return () => clearInterval(id);
-  }, [allLit]);
-
   if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Lumos" hint="Then tap each candle to light it" />;
+
+  const isLast = line >= LUMOS_LINES.length - 1;
+  const advance = () => {
+    if (isLast) onDone();
+    else setLine((n) => n + 1);
+  };
 
   return (
     <div className="absolute inset-0">
@@ -169,9 +169,8 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
         ))}
         <Fireflies />
         <Sparkles count={120} scale={[8, 4, 8]} size={1.4} speed={0.2} color="#ffd890" opacity={0.6} />
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.6} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.018} focalLength={0.06} bokehScale={2.6} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.5} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.18} darkness={1.0} />
         </EffectComposer>
       </Canvas>
@@ -187,14 +186,14 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
       </motion.div>
 
       {allLit && (
-        <div className="absolute inset-x-0 bottom-[16%] flex flex-col items-center text-center pointer-events-none px-6">
+        <div className="absolute inset-x-0 bottom-[20%] flex flex-col items-center text-center pointer-events-none px-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={line}
-              initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
+              initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
-              transition={{ duration: 1.4 }}
+              exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
+              transition={{ duration: 0.8 }}
               className="script text-2xl md:text-4xl text-foreground shimmer max-w-3xl"
             >
               {LUMOS_LINES[line]}
@@ -203,7 +202,7 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
         </div>
       )}
 
-      {allLit && line >= LUMOS_LINES.length - 1 && <ContinueButton onClick={onDone} />}
+      {allLit && <ContinueButton onClick={advance} label={isLast ? "Continue the Journey" : "Click to Continue"} />}
     </div>
   );
 }

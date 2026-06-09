@@ -1,6 +1,6 @@
 import { useRef, useEffect, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, DepthOfField, Noise } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette, Noise } from "@react-three/postprocessing";
 import { Sparkles, Environment } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
@@ -378,11 +378,10 @@ export function PatronusScene({ onDone }: { onDone: () => void }) {
         <ParticleTrail doeRef={doeRef} stateRef={stateRef} />
         <Sequence onDone={onDone} setCaption={setCaption} doeRef={doeRef} stateRef={stateRef} />
 
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.8} luminanceThreshold={0.15} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.018} focalLength={0.05} bokehScale={2.6} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.6} luminanceThreshold={0.18} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.15} darkness={1.1} />
-          <Noise opacity={0.035} />
+          <Noise opacity={0.03} />
         </EffectComposer>
       </Canvas>
 

@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, DepthOfField } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import { Float, Sparkles, Environment, Text } from "@react-three/drei";
 import { motion } from "framer-motion";
 import * as THREE from "three";
@@ -45,13 +45,16 @@ function Artifact({ index, total, hovered, setHovered, onSelect, spell }: {
   return (
     <group ref={ref}>
       <Float speed={2} rotationIntensity={0.2} floatIntensity={0.4}>
+        {/* Large invisible hit target — guarantees first-click registration */}
         <mesh
-          ref={meshRef}
           onPointerEnter={() => { setHovered(index); sparkle(0.9 + index * 0.1); }}
           onPointerLeave={() => setHovered(null)}
-          onClick={() => { whoosh(); onSelect(spell.id); }}
-          castShadow
+          onClick={(e) => { e.stopPropagation(); whoosh(); onSelect(spell.id); }}
         >
+          <sphereGeometry args={[0.6, 12, 12]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+        <mesh ref={meshRef} castShadow raycast={() => null}>
           {spell.id === "patronus" && <sphereGeometry args={[0.3, 24, 24]} />}
           {spell.id === "leviosa" && <coneGeometry args={[0.18, 0.55, 5]} />}
           {spell.id === "expelliarmus" && <cylinderGeometry args={[0.03, 0.06, 0.55, 12]} />}
@@ -69,7 +72,7 @@ function Artifact({ index, total, hovered, setHovered, onSelect, spell }: {
           />
         </mesh>
         <pointLight color={spell.color} intensity={isHovered ? 4 : 1.6} distance={3} />
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]} raycast={() => null}>
           <ringGeometry args={[0.5, 0.55, 64]} />
           <meshBasicMaterial color={c} transparent opacity={isHovered ? 0.7 : 0.25} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
@@ -164,10 +167,9 @@ export function ChamberScene({ onSelect }: { onSelect: (s: Spell) => void }) {
           <circleGeometry args={[6, 64]} />
           <meshStandardMaterial color="#0c0818" metalness={0.9} roughness={0.4} />
         </mesh>
-        <Sparkles count={200} scale={[10, 5, 10]} size={2} speed={0.2} color="#ffc890" opacity={0.6} />
-        <EffectComposer>
-          <Bloom intensity={1.3} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.02} focalLength={0.05} bokehScale={2.5} />
+        <Sparkles count={120} scale={[10, 5, 10]} size={2} speed={0.2} color="#ffc890" opacity={0.6} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.2} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.2} darkness={1.0} />
         </EffectComposer>
       </Canvas>

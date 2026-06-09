@@ -125,16 +125,21 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
     if (!cast) return;
     const tl = gsap.timeline();
     const obj = { t: 0, s: 0, g: 0 };
-    tl.to(obj, { t: 1, duration: 1.2, ease: "power2.in", onUpdate: () => setBeamT(obj.t) });
+    tl.to(obj, { t: 1, duration: 1.0, ease: "power2.in", onUpdate: () => setBeamT(obj.t) });
     tl.call(() => { whoosh(); setCollision((c) => c + 1); setShake(1); });
-    tl.to(obj, { s: 0, duration: 0.8, onUpdate: () => setShake(1 - obj.s) });
-    tl.to(obj, { t: 0, duration: 0.6, onUpdate: () => setBeamT(obj.t) });
-    tl.to(obj, { g: 1, duration: 1.4, ease: "back.out(1.6)", onUpdate: () => setGift(obj.g) });
-    const id = setInterval(() => setLine((n) => Math.min(n + 1, EXPEL_LINES.length - 1)), 2600);
-    return () => { tl.kill(); clearInterval(id); };
+    tl.to(obj, { s: 0, duration: 0.7, onUpdate: () => setShake(1 - obj.s) });
+    tl.to(obj, { t: 0, duration: 0.5, onUpdate: () => setBeamT(obj.t) });
+    tl.to(obj, { g: 1, duration: 1.2, ease: "back.out(1.6)", onUpdate: () => setGift(obj.g) });
+    return () => { tl.kill(); };
   }, [cast]);
 
-  if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expelliarmus" />;
+  if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expelliarmus" hint="Then click anywhere to continue the story" />;
+
+  const isLast = line >= EXPEL_LINES.length - 1;
+  const advance = () => {
+    if (isLast) onDone();
+    else setLine((n) => n + 1);
+  };
 
   return (
     <div className="absolute inset-0">
@@ -160,29 +165,29 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
         {beamT > 0.01 && <SpellBeam from={[2.0, 1.6, 0]} to={[0, 1.5, 0]} color="#80a0ff" t={beamT} />}
         <Shockwave trigger={collision} pos={[0, 0.1, 0]} />
         <GiftBox visible={gift} />
-        <Sparkles count={220} scale={[10, 6, 10]} size={2} speed={0.4} color="#ffb070" opacity={0.6} />
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.6} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
-          <ChromaticAberration offset={[shake * 0.005, shake * 0.005]} />
+        <Sparkles count={140} scale={[10, 6, 10]} size={2} speed={0.4} color="#ffb070" opacity={0.6} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.4} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
+          <ChromaticAberration offset={[shake * 0.004, shake * 0.004]} />
           <Vignette eskil={false} offset={0.2} darkness={1.1} />
         </EffectComposer>
       </Canvas>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.4 }}
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0 }}
         className="absolute inset-x-0 top-[8%] text-center pointer-events-none"
       >
         <div className="cinematic-letter-spaced text-[10px] text-primary/70 mb-2">Expelliarmus</div>
       </motion.div>
 
-      <div className="absolute inset-x-0 bottom-[16%] flex flex-col items-center text-center pointer-events-none px-6">
+      <div className="absolute inset-x-0 bottom-[18%] flex flex-col items-center text-center pointer-events-none px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={line}
-            initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
+            initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
-            transition={{ duration: 1.4 }}
+            exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
+            transition={{ duration: 0.8 }}
             className="script text-2xl md:text-4xl text-foreground shimmer max-w-3xl"
           >
             {EXPEL_LINES[line]}
@@ -190,7 +195,7 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
         </AnimatePresence>
       </div>
 
-      {line >= EXPEL_LINES.length - 1 && <ContinueButton onClick={onDone} />}
+      <ContinueButton onClick={advance} label={isLast ? "Continue the Journey" : "Click to Continue"} />
     </div>
   );
 }

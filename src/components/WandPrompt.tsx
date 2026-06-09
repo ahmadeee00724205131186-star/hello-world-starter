@@ -22,9 +22,9 @@ export function WandPrompt({
     setCasting(true);
     whoosh();
     sparkle(1.4);
-    setTimeout(() => sparkle(1.8), 220);
-    setTimeout(() => sparkle(0.9), 420);
-    setTimeout(onCast, 1100);
+    // Launch the spell scene almost immediately so the user never wonders
+    // whether the click worked. Visual cast continues to play under the new scene.
+    setTimeout(onCast, 220);
   };
 
   return (

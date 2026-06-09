@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, DepthOfField } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import { Sparkles, Float, Environment } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
@@ -354,6 +354,7 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
   const [portal, setPortal] = useState(0);
   const [pulse, setPulse] = useState(0);
   const [revealText, setRevealText] = useState<string>("");
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   const handleClick = () => {
     if (phase !== "idle") return;
@@ -363,6 +364,7 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
 
     const o = { openness, glow, lit, garden, wizard, portal, pulse };
     const tl = gsap.timeline();
+    tlRef.current = tl;
 
     // Phase 1 — Awakening (3.5s) energy flows, petals light one by one
     tl.to(o, {
@@ -398,23 +400,29 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
       onUpdate: () => setWizard(o.wizard),
     });
 
-    // Phase 6 — Butterflies (2s) — DOM overlay shown by phase
+    // Phase 6 — Butterflies (1.6s)
     tl.call(() => { setPhase("butterflies"); sparkle(1.3); });
-    tl.to({}, { duration: 2.0 });
+    tl.to({}, { duration: 1.6 });
 
-    // Phase 7 — Portal (3s)
+    // Phase 7 — Portal (2.4s)
     tl.call(() => { setPhase("portal"); whoosh(); });
     tl.to(o, {
-      portal: 1, duration: 3.0, ease: "power2.in",
+      portal: 1, duration: 2.4, ease: "power2.in",
       onUpdate: () => setPortal(o.portal),
     });
 
-    // Phase 8 — Reveal (5s)
+    // Phase 8 — Reveal (user-controlled). Pause until click.
     tl.call(() => { setPhase("reveal"); setRevealText("For My Precious Rubyduby ❤️"); });
-    tl.to({}, { duration: 3.0 });
+    tl.addPause();
     tl.call(() => setRevealText("The journey starts from here…"));
-    tl.to({}, { duration: 3.0 });
+    tl.addPause();
     tl.call(() => { setPhase("done"); onEnter(); });
+  };
+
+  const advanceReveal = () => {
+    if (phase !== "reveal") return;
+    sparkle(1.1);
+    tlRef.current?.play();
   };
 
   return (
@@ -449,19 +457,36 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
         <WizardObjects visible={wizard} />
         <Portal visible={portal} />
 
-        <Sparkles count={140} scale={[8, 5, 8]} size={2.4} speed={0.25} color="#ffd0a8" opacity={0.65} />
-        <Sparkles count={90} scale={[12, 6, 12]} size={1.2} speed={0.12} color="#ffaee0" opacity={0.45} />
+        <Sparkles count={90} scale={[8, 5, 8]} size={2.4} speed={0.25} color="#ffd0a8" opacity={0.65} />
+        <Sparkles count={60} scale={[12, 6, 12]} size={1.2} speed={0.12} color="#ffaee0" opacity={0.45} />
 
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.5} luminanceThreshold={0.22} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.02} focalLength={0.045} bokehScale={2.4} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.3} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.2} darkness={1.0} />
         </EffectComposer>
       </Canvas>
 
+      {/* Reliable full-screen click target during idle — guarantees the first click fires */}
+      {phase === "idle" && (
+        <button
+          aria-label="Begin the journey"
+          onClick={handleClick}
+          className="absolute inset-0 z-30 cursor-pointer bg-transparent border-0 outline-none"
+        />
+      )}
+
+      {/* Click-to-continue during reveal */}
+      {phase === "reveal" && (
+        <button
+          aria-label="Continue"
+          onClick={advanceReveal}
+          className="absolute inset-0 z-30 cursor-pointer bg-transparent border-0 outline-none"
+        />
+      )}
+
       {/* Idle butterflies + hearts overlay */}
       {phase === "idle" && <ButterflyOverlay count={5} />}
-      {(phase === "garden" || phase === "wizard" || phase === "butterflies") && <ButterflyOverlay count={9} />}
+      {(phase === "garden" || phase === "wizard" || phase === "butterflies") && <ButterflyOverlay count={7} />}
 
       {/* Captions */}
       <AnimatePresence mode="wait">
@@ -533,10 +558,16 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
             initial={{ opacity: 0, y: 24, letterSpacing: "0.5em", filter: "blur(14px)" }}
             animate={{ opacity: 1, y: 0, letterSpacing: "0.05em", filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -14, filter: "blur(10px)" }}
-            transition={{ duration: 2.0 }}
-            className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-20"
+            transition={{ duration: 1.4 }}
+            className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none z-20"
           >
             <div className="script text-4xl md:text-6xl text-foreground shimmer max-w-3xl">{revealText}</div>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6, duration: 1.2 }}
+              className="mt-12 cinematic-letter-spaced text-xs text-primary/80"
+            >
+              ✨ Click anywhere to Continue ✨
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
