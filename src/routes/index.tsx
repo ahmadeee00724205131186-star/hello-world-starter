@@ -33,7 +33,7 @@ function Index() {
 
   const go = (next: Stage) => {
     setTransitioning(true);
-    setTimeout(() => { setStage(next); setTransitioning(false); }, 900);
+    setTimeout(() => { setStage(next); setTransitioning(false); }, 500);
   };
 
   const onSpellSelect = (s: Spell) => {
@@ -58,7 +58,7 @@ function Index() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.0 }}
+            transition={{ duration: 0.55 }}
             className="absolute inset-0"
           >
             {stage === "flower" && <FlowerScene onEnter={() => go("chamber")} />}
