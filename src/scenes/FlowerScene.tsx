@@ -354,6 +354,7 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
   const [portal, setPortal] = useState(0);
   const [pulse, setPulse] = useState(0);
   const [revealText, setRevealText] = useState<string>("");
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   const handleClick = () => {
     if (phase !== "idle") return;
@@ -363,6 +364,7 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
 
     const o = { openness, glow, lit, garden, wizard, portal, pulse };
     const tl = gsap.timeline();
+    tlRef.current = tl;
 
     // Phase 1 — Awakening (3.5s) energy flows, petals light one by one
     tl.to(o, {
@@ -398,23 +400,29 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
       onUpdate: () => setWizard(o.wizard),
     });
 
-    // Phase 6 — Butterflies (2s) — DOM overlay shown by phase
+    // Phase 6 — Butterflies (1.6s)
     tl.call(() => { setPhase("butterflies"); sparkle(1.3); });
-    tl.to({}, { duration: 2.0 });
+    tl.to({}, { duration: 1.6 });
 
-    // Phase 7 — Portal (3s)
+    // Phase 7 — Portal (2.4s)
     tl.call(() => { setPhase("portal"); whoosh(); });
     tl.to(o, {
-      portal: 1, duration: 3.0, ease: "power2.in",
+      portal: 1, duration: 2.4, ease: "power2.in",
       onUpdate: () => setPortal(o.portal),
     });
 
-    // Phase 8 — Reveal (5s)
+    // Phase 8 — Reveal (user-controlled). Pause until click.
     tl.call(() => { setPhase("reveal"); setRevealText("For My Precious Rubyduby ❤️"); });
-    tl.to({}, { duration: 3.0 });
+    tl.addPause();
     tl.call(() => setRevealText("The journey starts from here…"));
-    tl.to({}, { duration: 3.0 });
+    tl.addPause();
     tl.call(() => { setPhase("done"); onEnter(); });
+  };
+
+  const advanceReveal = () => {
+    if (phase !== "reveal") return;
+    sparkle(1.1);
+    tlRef.current?.play();
   };
 
   return (
