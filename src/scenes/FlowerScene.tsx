@@ -457,19 +457,36 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
         <WizardObjects visible={wizard} />
         <Portal visible={portal} />
 
-        <Sparkles count={140} scale={[8, 5, 8]} size={2.4} speed={0.25} color="#ffd0a8" opacity={0.65} />
-        <Sparkles count={90} scale={[12, 6, 12]} size={1.2} speed={0.12} color="#ffaee0" opacity={0.45} />
+        <Sparkles count={90} scale={[8, 5, 8]} size={2.4} speed={0.25} color="#ffd0a8" opacity={0.65} />
+        <Sparkles count={60} scale={[12, 6, 12]} size={1.2} speed={0.12} color="#ffaee0" opacity={0.45} />
 
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.5} luminanceThreshold={0.22} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.02} focalLength={0.045} bokehScale={2.4} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.3} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.2} darkness={1.0} />
         </EffectComposer>
       </Canvas>
 
+      {/* Reliable full-screen click target during idle — guarantees the first click fires */}
+      {phase === "idle" && (
+        <button
+          aria-label="Begin the journey"
+          onClick={handleClick}
+          className="absolute inset-0 z-30 cursor-pointer bg-transparent border-0 outline-none"
+        />
+      )}
+
+      {/* Click-to-continue during reveal */}
+      {phase === "reveal" && (
+        <button
+          aria-label="Continue"
+          onClick={advanceReveal}
+          className="absolute inset-0 z-30 cursor-pointer bg-transparent border-0 outline-none"
+        />
+      )}
+
       {/* Idle butterflies + hearts overlay */}
       {phase === "idle" && <ButterflyOverlay count={5} />}
-      {(phase === "garden" || phase === "wizard" || phase === "butterflies") && <ButterflyOverlay count={9} />}
+      {(phase === "garden" || phase === "wizard" || phase === "butterflies") && <ButterflyOverlay count={7} />}
 
       {/* Captions */}
       <AnimatePresence mode="wait">
