@@ -125,16 +125,21 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
     if (!cast) return;
     const tl = gsap.timeline();
     const obj = { t: 0, s: 0, g: 0 };
-    tl.to(obj, { t: 1, duration: 1.2, ease: "power2.in", onUpdate: () => setBeamT(obj.t) });
+    tl.to(obj, { t: 1, duration: 1.0, ease: "power2.in", onUpdate: () => setBeamT(obj.t) });
     tl.call(() => { whoosh(); setCollision((c) => c + 1); setShake(1); });
-    tl.to(obj, { s: 0, duration: 0.8, onUpdate: () => setShake(1 - obj.s) });
-    tl.to(obj, { t: 0, duration: 0.6, onUpdate: () => setBeamT(obj.t) });
-    tl.to(obj, { g: 1, duration: 1.4, ease: "back.out(1.6)", onUpdate: () => setGift(obj.g) });
-    const id = setInterval(() => setLine((n) => Math.min(n + 1, EXPEL_LINES.length - 1)), 2600);
-    return () => { tl.kill(); clearInterval(id); };
+    tl.to(obj, { s: 0, duration: 0.7, onUpdate: () => setShake(1 - obj.s) });
+    tl.to(obj, { t: 0, duration: 0.5, onUpdate: () => setBeamT(obj.t) });
+    tl.to(obj, { g: 1, duration: 1.2, ease: "back.out(1.6)", onUpdate: () => setGift(obj.g) });
+    return () => { tl.kill(); };
   }, [cast]);
 
-  if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expelliarmus" />;
+  if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expelliarmus" hint="Then click anywhere to continue the story" />;
+
+  const isLast = line >= EXPEL_LINES.length - 1;
+  const advance = () => {
+    if (isLast) onDone();
+    else setLine((n) => n + 1);
+  };
 
   return (
     <div className="absolute inset-0">

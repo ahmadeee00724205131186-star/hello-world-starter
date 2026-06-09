@@ -120,13 +120,13 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
   const [cast, setCast] = useState(false);
   const [line, setLine] = useState(0);
 
-  useEffect(() => {
-    if (!cast) return;
-    const id = setInterval(() => setLine((n) => Math.min(n + 1, LEVIOSA_LINES.length - 1)), 2600);
-    return () => clearInterval(id);
-  }, [cast]);
+  if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Wingardium Leviosa" hint="Then click anywhere to continue the story" />;
 
-  if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Wingardium Leviosa" />;
+  const isLast = line >= LEVIOSA_LINES.length - 1;
+  const advance = () => {
+    if (isLast) onDone();
+    else setLine((n) => n + 1);
+  };
 
   return (
     <div className="absolute inset-0">
@@ -155,35 +155,34 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
           const y = 0.5 + Math.random() * 1.5;
           const z = -1 + Math.random() * 2;
           const colors = ["#7a3b2a", "#5a4d2f", "#2f4a3b", "#3a2a5a", "#5a2f4a"];
-          return <Book key={i} pos={[x, y, z]} rot={[0, Math.random() * Math.PI, (Math.random() - 0.5) * 0.4]} color={colors[i % colors.length]} delay={i * 0.2} />;
+          return <Book key={i} pos={[x, y, z]} rot={[0, Math.random() * Math.PI, (Math.random() - 0.5) * 0.4]} color={colors[i % colors.length]} delay={i * 0.12} />;
         })}
-        {Array.from({ length: 12 }).map((_, i) => <Feather key={i} seed={i} />)}
+        {Array.from({ length: 10 }).map((_, i) => <Feather key={i} seed={i} />)}
         {[[-2, -0.5, 1], [2, -0.3, 0.5], [0, -0.7, -1], [1.5, -0.4, -1.5]].map((p, i) => (
           <Candle key={i} pos={p as [number, number, number]} />
         ))}
-        <Sparkles count={150} scale={[8, 5, 6]} size={1.5} speed={0.2} color="#ffd890" opacity={0.6} />
-        <EffectComposer multisampling={4}>
+        <Sparkles count={90} scale={[8, 5, 6]} size={1.5} speed={0.2} color="#ffd890" opacity={0.6} />
+        <EffectComposer multisampling={0}>
           <Bloom intensity={1.0} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.02} focalLength={0.05} bokehScale={2} />
           <Vignette eskil={false} offset={0.2} darkness={0.9} />
         </EffectComposer>
       </Canvas>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.4 }}
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0 }}
         className="absolute inset-x-0 top-[8%] text-center pointer-events-none"
       >
         <div className="cinematic-letter-spaced text-[10px] text-primary/70 mb-2">Wingardium Leviosa</div>
       </motion.div>
 
-      <div className="absolute inset-x-0 bottom-[16%] flex flex-col items-center text-center pointer-events-none px-6 gap-3">
+      <div className="absolute inset-x-0 bottom-[18%] flex flex-col items-center text-center pointer-events-none px-6 gap-3">
         <AnimatePresence mode="wait">
           <motion.div
             key={line}
-            initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
+            initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
-            transition={{ duration: 1.4 }}
+            exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
+            transition={{ duration: 0.8 }}
             className="script text-2xl md:text-4xl text-foreground shimmer max-w-3xl"
           >
             {LEVIOSA_LINES[line]}
@@ -191,19 +190,19 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
         </AnimatePresence>
       </div>
 
-      {line >= LEVIOSA_LINES.length - 1 && <ContinueButton onClick={onDone} />}
+      <ContinueButton onClick={advance} label={isLast ? "Continue the Journey" : "Click to Continue"} />
     </div>
   );
 }
 
-export function ContinueButton({ onClick, label = "Continue" }: { onClick: () => void; label?: string }) {
+export function ContinueButton({ onClick, label = "Click to Continue" }: { onClick: () => void; label?: string }) {
   return (
     <motion.button
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4, duration: 1 }}
+      initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
       onClick={onClick}
-      className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 border border-primary/40 bg-background/30 backdrop-blur-md rounded-full text-primary cinematic-letter-spaced text-xs hover:bg-background/60 hover:border-primary transition-all z-20"
+      className="absolute bottom-8 left-1/2 -translate-x-1/2 px-8 py-3 border border-primary/50 bg-background/40 backdrop-blur-md rounded-full text-primary cinematic-letter-spaced text-xs hover:bg-background/70 hover:border-primary transition-all z-30 pointer-events-auto shadow-[0_0_24px_oklch(0.82_0.14_65/0.25)]"
     >
-      {label} →
+      ✨ {label} ✨
     </motion.button>
   );
 }
