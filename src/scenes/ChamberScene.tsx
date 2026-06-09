@@ -45,13 +45,16 @@ function Artifact({ index, total, hovered, setHovered, onSelect, spell }: {
   return (
     <group ref={ref}>
       <Float speed={2} rotationIntensity={0.2} floatIntensity={0.4}>
+        {/* Large invisible hit target — guarantees first-click registration */}
         <mesh
-          ref={meshRef}
           onPointerEnter={() => { setHovered(index); sparkle(0.9 + index * 0.1); }}
           onPointerLeave={() => setHovered(null)}
-          onClick={() => { whoosh(); onSelect(spell.id); }}
-          castShadow
+          onClick={(e) => { e.stopPropagation(); whoosh(); onSelect(spell.id); }}
         >
+          <sphereGeometry args={[0.6, 12, 12]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+        <mesh ref={meshRef} castShadow raycast={() => null}>
           {spell.id === "patronus" && <sphereGeometry args={[0.3, 24, 24]} />}
           {spell.id === "leviosa" && <coneGeometry args={[0.18, 0.55, 5]} />}
           {spell.id === "expelliarmus" && <cylinderGeometry args={[0.03, 0.06, 0.55, 12]} />}
@@ -69,7 +72,7 @@ function Artifact({ index, total, hovered, setHovered, onSelect, spell }: {
           />
         </mesh>
         <pointLight color={spell.color} intensity={isHovered ? 4 : 1.6} distance={3} />
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]} raycast={() => null}>
           <ringGeometry args={[0.5, 0.55, 64]} />
           <meshBasicMaterial color={c} transparent opacity={isHovered ? 0.7 : 0.25} toneMapped={false} side={THREE.DoubleSide} />
         </mesh>
