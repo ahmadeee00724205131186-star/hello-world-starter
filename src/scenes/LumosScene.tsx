@@ -187,14 +187,14 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
       </motion.div>
 
       {allLit && (
-        <div className="absolute inset-x-0 bottom-[16%] flex flex-col items-center text-center pointer-events-none px-6">
+        <div className="absolute inset-x-0 bottom-[20%] flex flex-col items-center text-center pointer-events-none px-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={line}
-              initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
+              initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
-              transition={{ duration: 1.4 }}
+              exit={{ opacity: 0, y: -8, filter: "blur(6px)" }}
+              transition={{ duration: 0.8 }}
               className="script text-2xl md:text-4xl text-foreground shimmer max-w-3xl"
             >
               {LUMOS_LINES[line]}
@@ -203,7 +203,7 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
         </div>
       )}
 
-      {allLit && line >= LUMOS_LINES.length - 1 && <ContinueButton onClick={onDone} />}
+      {allLit && <ContinueButton onClick={advance} label={isLast ? "Continue the Journey" : "Click to Continue"} />}
     </div>
   );
 }
