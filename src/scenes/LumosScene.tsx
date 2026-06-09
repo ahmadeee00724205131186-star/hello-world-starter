@@ -138,13 +138,13 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
   const allLit = lit.every(Boolean);
   const [line, setLine] = useState(0);
 
-  useEffect(() => {
-    if (!allLit) return;
-    const id = setInterval(() => setLine((n) => Math.min(n + 1, LUMOS_LINES.length - 1)), 2400);
-    return () => clearInterval(id);
-  }, [allLit]);
-
   if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Lumos" hint="Then tap each candle to light it" />;
+
+  const isLast = line >= LUMOS_LINES.length - 1;
+  const advance = () => {
+    if (isLast) onDone();
+    else setLine((n) => n + 1);
+  };
 
   return (
     <div className="absolute inset-0">
