@@ -169,9 +169,8 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
         ))}
         <Fireflies />
         <Sparkles count={120} scale={[8, 4, 8]} size={1.4} speed={0.2} color="#ffd890" opacity={0.6} />
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.6} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.018} focalLength={0.06} bokehScale={2.6} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.5} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.18} darkness={1.0} />
         </EffectComposer>
       </Canvas>
