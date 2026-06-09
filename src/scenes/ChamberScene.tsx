@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, DepthOfField } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import { Float, Sparkles, Environment, Text } from "@react-three/drei";
 import { motion } from "framer-motion";
 import * as THREE from "three";
@@ -167,10 +167,9 @@ export function ChamberScene({ onSelect }: { onSelect: (s: Spell) => void }) {
           <circleGeometry args={[6, 64]} />
           <meshStandardMaterial color="#0c0818" metalness={0.9} roughness={0.4} />
         </mesh>
-        <Sparkles count={200} scale={[10, 5, 10]} size={2} speed={0.2} color="#ffc890" opacity={0.6} />
-        <EffectComposer>
-          <Bloom intensity={1.3} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
-          <DepthOfField focusDistance={0.02} focalLength={0.05} bokehScale={2.5} />
+        <Sparkles count={120} scale={[10, 5, 10]} size={2} speed={0.2} color="#ffc890" opacity={0.6} />
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={1.2} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
           <Vignette eskil={false} offset={0.2} darkness={1.0} />
         </EffectComposer>
       </Canvas>
