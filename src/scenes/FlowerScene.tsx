@@ -558,10 +558,16 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
             initial={{ opacity: 0, y: 24, letterSpacing: "0.5em", filter: "blur(14px)" }}
             animate={{ opacity: 1, y: 0, letterSpacing: "0.05em", filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -14, filter: "blur(10px)" }}
-            transition={{ duration: 2.0 }}
-            className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-20"
+            transition={{ duration: 1.4 }}
+            className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none z-20"
           >
             <div className="script text-4xl md:text-6xl text-foreground shimmer max-w-3xl">{revealText}</div>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6, duration: 1.2 }}
+              className="mt-12 cinematic-letter-spaced text-xs text-primary/80"
+            >
+              ✨ Click anywhere to Continue ✨
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
