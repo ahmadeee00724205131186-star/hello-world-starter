@@ -26,10 +26,44 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function LoadingVeil() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-[#0a0612]">
+      <div
+        className="size-16 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, oklch(0.85 0.16 70 / 0.9) 0%, transparent 70%)",
+          animation: "magicPulse 1.6s ease-in-out infinite",
+          willChange: "transform, opacity",
+        }}
+      />
+      <style>{`@keyframes magicPulse{0%,100%{transform:scale(0.9);opacity:0.6}50%{transform:scale(1.2);opacity:1}}`}</style>
+    </div>
+  );
+}
+
 function Index() {
+  const [isAppReady, setIsAppReady] = useState(false);
   const [stage, setStage] = useState<Stage>("flower");
   const [cast, setCast] = useState<Set<Spell>>(new Set());
   const [transitioning, setTransitioning] = useState(false);
+
+  // Wait one paint + a small settle delay so React, Three.js, and the DOM are
+  // fully mounted before any scene starts its animation loops or timelines.
+  useEffect(() => {
+    let raf1 = 0, raf2 = 0;
+    const t = setTimeout(() => {
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setIsAppReady(true));
+      });
+    }, 120);
+    return () => {
+      clearTimeout(t);
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, []);
 
   const go = (next: Stage) => {
     setTransitioning(true);
@@ -48,6 +82,14 @@ function Index() {
   };
 
   const restart = () => { setCast(new Set()); go("flower"); };
+
+  if (!isAppReady) {
+    return (
+      <main className="fixed inset-0 vignette overflow-hidden">
+        <LoadingVeil />
+      </main>
+    );
+  }
 
   return (
     <main className="fixed inset-0 vignette film-grain overflow-hidden">
