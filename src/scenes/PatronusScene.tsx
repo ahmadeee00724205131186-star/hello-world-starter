@@ -1,7 +1,6 @@
 import { useRef, useEffect, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, Noise } from "@react-three/postprocessing";
-import { Sparkles, Environment } from "@react-three/drei";
+import { Sparkles } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -353,16 +352,15 @@ export function PatronusScene({ onDone }: { onDone: () => void }) {
   if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expecto Patronum" />;
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#040614" }}>
       <Canvas
-        shadows
         camera={{ position: [0, 1.5, 6], fov: 42 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.9, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.9, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
+        style={{ width: "100%", height: "100%", display: "block", background: "#040614" }}
       >
         <color attach="background" args={["#040614"]} />
         <fog attach="fog" args={["#060820", 6, 24]} />
-        <Environment preset="night" />
         <ambientLight intensity={0.08} color="#7088c0" />
         <directionalLight position={[-6, 12, -4]} intensity={1.2} color="#cfd8ff" castShadow shadow-mapSize={[1024, 1024]} />
         <hemisphereLight args={["#9fb6ff", "#0a0d18", 0.3]} />
@@ -377,12 +375,6 @@ export function PatronusScene({ onDone }: { onDone: () => void }) {
         <Footprints doeRef={doeRef} stateRef={stateRef} />
         <ParticleTrail doeRef={doeRef} stateRef={stateRef} />
         <Sequence onDone={onDone} setCaption={setCaption} doeRef={doeRef} stateRef={stateRef} />
-
-        <EffectComposer multisampling={0}>
-          <Bloom intensity={1.6} luminanceThreshold={0.18} luminanceSmoothing={0.9} mipmapBlur />
-          <Vignette eskil={false} offset={0.15} darkness={1.1} />
-          <Noise opacity={0.03} />
-        </EffectComposer>
       </Canvas>
 
       <AnimatePresence mode="wait">

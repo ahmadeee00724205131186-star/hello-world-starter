@@ -1,7 +1,6 @@
 import { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
-import { Sparkles, Environment } from "@react-three/drei";
+import { Sparkles } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import { ContinueButton } from "./LeviosaScene";
@@ -147,16 +146,15 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#0a0612" }}>
       <Canvas
-        shadows
         camera={{ position: [0, 1.4, 4], fov: 45 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
+        style={{ width: "100%", height: "100%", display: "block", background: "#0a0612" }}
       >
         <color attach="background" args={["#0a0612"]} />
         <fog attach="fog" args={["#0a0612", 5, 14]} />
-        <Environment preset="night" />
         <ambientLight intensity={0.08} color="#ffb070" />
         <Cam allLit={allLit} />
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.7, 0]} receiveShadow>
@@ -169,10 +167,6 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
         ))}
         <Fireflies />
         <Sparkles count={120} scale={[8, 4, 8]} size={1.4} speed={0.2} color="#ffd890" opacity={0.6} />
-        <EffectComposer multisampling={0}>
-          <Bloom intensity={1.5} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
-          <Vignette eskil={false} offset={0.18} darkness={1.0} />
-        </EffectComposer>
       </Canvas>
 
       <motion.div

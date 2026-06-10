@@ -1,7 +1,6 @@
 import { useRef, useState, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
-import { Float, Sparkles, Environment, Text } from "@react-three/drei";
+import { Float, Sparkles, Text } from "@react-three/drei";
 import { motion } from "framer-motion";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -145,16 +144,15 @@ export function ChamberScene({ onSelect }: { onSelect: (s: Spell) => void }) {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#08050f" }}>
       <Canvas
-        shadows
         camera={{ position: [0, 1.4, 3.5], fov: 42 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
-        dpr={[1, 2]}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0, powerPreference: "high-performance" }}
+        dpr={[1, 1.5]}
+        style={{ width: "100%", height: "100%", display: "block", background: "#08050f" }}
       >
         <color attach="background" args={["#08050f"]} />
         <fog attach="fog" args={["#08050f", 4, 14]} />
-        <Environment preset="night" />
         <ambientLight intensity={0.1} />
         <spotLight position={[0, 6, 0]} angle={0.5} penumbra={1} intensity={2} color="#c0a8ff" castShadow />
         <Camera />
@@ -168,10 +166,6 @@ export function ChamberScene({ onSelect }: { onSelect: (s: Spell) => void }) {
           <meshStandardMaterial color="#0c0818" metalness={0.9} roughness={0.4} />
         </mesh>
         <Sparkles count={120} scale={[10, 5, 10]} size={2} speed={0.2} color="#ffc890" opacity={0.6} />
-        <EffectComposer multisampling={0}>
-          <Bloom intensity={1.2} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
-          <Vignette eskil={false} offset={0.2} darkness={1.0} />
-        </EffectComposer>
       </Canvas>
 
       <motion.div
