@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, ChromaticAberration } from "@react-three/postprocessing";
-import { Sparkles, Environment, Float } from "@react-three/drei";
+import { Sparkles, Float } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -142,16 +141,15 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#0a0612" }}>
       <Canvas
-        shadows
         camera={{ position: [0, 1.4, 4], fov: 50 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
+        style={{ width: "100%", height: "100%", display: "block", background: "#0a0612" }}
       >
         <color attach="background" args={["#0a0612"]} />
         <fog attach="fog" args={["#0a0612", 6, 16]} />
-        <Environment preset="night" />
         <ambientLight intensity={0.15} />
         <spotLight position={[0, 8, 3]} angle={0.5} penumbra={1} intensity={1.4} color="#ffc890" castShadow />
         <Cam shake={shake} />
@@ -166,11 +164,6 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
         <Shockwave trigger={collision} pos={[0, 0.1, 0]} />
         <GiftBox visible={gift} />
         <Sparkles count={140} scale={[10, 6, 10]} size={2} speed={0.4} color="#ffb070" opacity={0.6} />
-        <EffectComposer multisampling={0}>
-          <Bloom intensity={1.4} luminanceThreshold={0.2} luminanceSmoothing={0.9} mipmapBlur />
-          <ChromaticAberration offset={[shake * 0.004, shake * 0.004]} />
-          <Vignette eskil={false} offset={0.2} darkness={1.1} />
-        </EffectComposer>
       </Canvas>
 
       <motion.div
