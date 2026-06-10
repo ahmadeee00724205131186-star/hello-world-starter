@@ -1,7 +1,6 @@
 import { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
-import { Float, Sparkles, Environment } from "@react-three/drei";
+import { Float, Sparkles } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -129,16 +128,15 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#1a0e0a" }}>
       <Canvas
-        shadows
         camera={{ position: [0, 1.2, 3.5], fov: 45 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
+        style={{ width: "100%", height: "100%", display: "block", background: "#1a0e0a" }}
       >
         <color attach="background" args={["#1a0e0a"]} />
         <fog attach="fog" args={["#1a0e0a", 4, 12]} />
-        <Environment preset="warehouse" />
         <ambientLight intensity={0.25} color="#f5c890" />
         <directionalLight position={[2, 4, 3]} intensity={0.8} color="#ffb070" castShadow />
         <Cam />
@@ -162,10 +160,6 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
           <Candle key={i} pos={p as [number, number, number]} />
         ))}
         <Sparkles count={90} scale={[8, 5, 6]} size={1.5} speed={0.2} color="#ffd890" opacity={0.6} />
-        <EffectComposer multisampling={0}>
-          <Bloom intensity={1.0} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
-          <Vignette eskil={false} offset={0.2} darkness={0.9} />
-        </EffectComposer>
       </Canvas>
 
       <motion.div
