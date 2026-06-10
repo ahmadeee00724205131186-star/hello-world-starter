@@ -356,6 +356,15 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
   const [revealText, setRevealText] = useState<string>("");
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
+  // Hard-kill any leftover timeline on unmount so it can't keep ticking
+  // and mutating state after we leave the scene.
+  useEffect(() => {
+    return () => {
+      tlRef.current?.kill();
+      tlRef.current = null;
+    };
+  }, []);
+
   const handleClick = () => {
     if (phase !== "idle") return;
     sparkle(1.2);
