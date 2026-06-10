@@ -1,7 +1,6 @@
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
-import { Sparkles, Float, Environment } from "@react-three/drei";
+import { Sparkles, Float } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -435,17 +434,16 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#1a0f24" }}>
       <SkyOverlay phase={phase} />
       <Canvas
-        shadows
         camera={{ position: [0, 0.3, 2.6], fov: 38 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
+        style={{ width: "100%", height: "100%", display: "block", background: "#1a0f24" }}
       >
         <color attach="background" args={["#1a0f24"]} />
         <fog attach="fog" args={["#1a0f24", 5, 14]} />
-        <Environment preset="sunset" />
         <ambientLight intensity={0.25} />
         <spotLight position={[3, 5, 2]} angle={0.4} penumbra={1} intensity={1.4} color="#d6b8ff" castShadow />
         <spotLight position={[-3, 2, 4]} angle={0.5} penumbra={1} intensity={0.9} color="#ff9fc8" />
@@ -468,11 +466,6 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
 
         <Sparkles count={90} scale={[8, 5, 8]} size={2.4} speed={0.25} color="#ffd0a8" opacity={0.65} />
         <Sparkles count={60} scale={[12, 6, 12]} size={1.2} speed={0.12} color="#ffaee0" opacity={0.45} />
-
-        <EffectComposer multisampling={0}>
-          <Bloom intensity={1.3} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
-          <Vignette eskil={false} offset={0.2} darkness={1.0} />
-        </EffectComposer>
       </Canvas>
 
       {/* Reliable full-screen click target during idle — guarantees the first click fires */}
