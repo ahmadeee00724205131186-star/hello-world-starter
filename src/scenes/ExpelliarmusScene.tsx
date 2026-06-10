@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Sparkles, Float } from "@react-three/drei";
+import { Sparkles } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import gsap from "gsap";
