@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ClientOnly } from "@/components/ClientOnly";
 import { SoundToggle } from "@/components/SoundToggle";
 import { MagicCursor } from "@/components/MagicCursor";
+import { SceneErrorBoundary } from "@/components/SceneErrorBoundary";
 import { FlowerScene } from "@/scenes/FlowerScene";
 import { ChamberScene, type Spell } from "@/scenes/ChamberScene";
 import { PatronusScene } from "@/scenes/PatronusScene";
@@ -94,24 +95,31 @@ function Index() {
   return (
     <main className="fixed inset-0 vignette film-grain overflow-hidden">
       <ClientOnly fallback={<div className="absolute inset-0 flex items-center justify-center text-primary/60">Loading magic…</div>}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={stage}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55 }}
-            className="absolute inset-0"
-          >
-            {stage === "flower" && <FlowerScene onEnter={() => go("chamber")} />}
-            {stage === "chamber" && <ChamberScene onSelect={onSpellSelect} />}
-            {stage === "patronus" && <PatronusScene onDone={onSpellDone} />}
-            {stage === "leviosa" && <LeviosaScene onDone={onSpellDone} />}
-            {stage === "expelliarmus" && <ExpelliarmusScene onDone={onSpellDone} />}
-            {stage === "lumos" && <LumosScene onDone={onSpellDone} />}
-            {stage === "message" && <MessageScene onRestart={restart} />}
-          </motion.div>
-        </AnimatePresence>
+        <div
+          className="absolute inset-0"
+          style={{ background: "#0a0612" }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={stage}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.55 }}
+              className="absolute inset-0"
+            >
+              <SceneErrorBoundary>
+                {stage === "flower" && <FlowerScene onEnter={() => go("chamber")} />}
+                {stage === "chamber" && <ChamberScene onSelect={onSpellSelect} />}
+                {stage === "patronus" && <PatronusScene onDone={onSpellDone} />}
+                {stage === "leviosa" && <LeviosaScene onDone={onSpellDone} />}
+                {stage === "expelliarmus" && <ExpelliarmusScene onDone={onSpellDone} />}
+                {stage === "lumos" && <LumosScene onDone={onSpellDone} />}
+                {stage === "message" && <MessageScene onRestart={restart} />}
+              </SceneErrorBoundary>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         <MagicCursor />
         <SoundToggle />
