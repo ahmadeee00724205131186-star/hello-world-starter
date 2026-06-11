@@ -176,7 +176,28 @@ function Doe({ stateRef, refForCam }: {
       <mesh ref={tail} position={[0, 0.55, -0.55]} rotation={[0.6, 0, 0]} material={silverMat}>
         <capsuleGeometry args={[0.05, 0.18, 6, 12]} />
       </mesh>
-      <pointLight color="#c0d8ff" intensity={6} distance={8} />
+      {/* Soft luminous halo — billboarded glow that sells the magical light */}
+      <sprite position={[0, 0.7, 0]} scale={[3.2, 3.2, 1]}>
+        <spriteMaterial
+          color={new THREE.Color(2.4, 2.8, 3.6)}
+          transparent
+          opacity={0.55}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </sprite>
+      <sprite position={[0, 0.7, 0]} scale={[1.6, 1.6, 1]}>
+        <spriteMaterial
+          color={new THREE.Color(3.2, 3.4, 4)}
+          transparent
+          opacity={0.7}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </sprite>
+      <pointLight color="#c8dcff" intensity={10} distance={12} />
     </group>
   );
 }
