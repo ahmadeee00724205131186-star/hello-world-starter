@@ -128,7 +128,7 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#1a0e0a" }}>
+    <div className="absolute inset-0" style={{ width: "100%", height: "100dvh", overflow: "hidden", background: "#1a0e0a" }}>
       <Canvas
         camera={{ position: [0, 1.2, 3.5], fov: 45 }}
         gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.35, powerPreference: "high-performance" }}

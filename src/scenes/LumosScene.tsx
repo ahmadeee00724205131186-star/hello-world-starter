@@ -146,7 +146,7 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#0a0612" }}>
+    <div className="absolute inset-0" style={{ width: "100%", height: "100dvh", overflow: "hidden", background: "#0a0612" }}>
       <Canvas
         camera={{ position: [0, 1.4, 4], fov: 45 }}
         gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.35, powerPreference: "high-performance" }}

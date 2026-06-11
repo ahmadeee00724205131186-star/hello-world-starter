@@ -144,7 +144,7 @@ export function ChamberScene({ onSelect }: { onSelect: (s: Spell) => void }) {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#08050f" }}>
+    <div className="absolute inset-0" style={{ width: "100%", height: "100dvh", overflow: "hidden", background: "#08050f" }}>
       <Canvas
         camera={{ position: [0, 1.4, 3.5], fov: 42 }}
         gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0, powerPreference: "high-performance" }}

@@ -101,16 +101,16 @@ function Fireflies() {
 
 /* Silver Doe — uses shared material instance (cheaper) */
 const silverMat = new THREE.MeshPhysicalMaterial({
-  color: new THREE.Color("#e6f0ff"),
-  emissive: new THREE.Color(1.6, 1.8, 2.2),
-  emissiveIntensity: 1.2,
-  metalness: 0.2,
-  roughness: 0.25,
-  transmission: 0.4,
+  color: new THREE.Color("#f0f6ff"),
+  emissive: new THREE.Color(2.4, 2.6, 3.2),
+  emissiveIntensity: 2.4,
+  metalness: 0.15,
+  roughness: 0.2,
+  transmission: 0.45,
   thickness: 0.6,
   transparent: true,
   opacity: 0,
-  ior: 1.4,
+  ior: 1.45,
   clearcoat: 1,
 });
 
@@ -176,7 +176,28 @@ function Doe({ stateRef, refForCam }: {
       <mesh ref={tail} position={[0, 0.55, -0.55]} rotation={[0.6, 0, 0]} material={silverMat}>
         <capsuleGeometry args={[0.05, 0.18, 6, 12]} />
       </mesh>
-      <pointLight color="#c0d8ff" intensity={6} distance={8} />
+      {/* Soft luminous halo — billboarded glow that sells the magical light */}
+      <sprite position={[0, 0.7, 0]} scale={[3.2, 3.2, 1]}>
+        <spriteMaterial
+          color={new THREE.Color(2.4, 2.8, 3.6)}
+          transparent
+          opacity={0.55}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </sprite>
+      <sprite position={[0, 0.7, 0]} scale={[1.6, 1.6, 1]}>
+        <spriteMaterial
+          color={new THREE.Color(3.2, 3.4, 4)}
+          transparent
+          opacity={0.7}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </sprite>
+      <pointLight color="#c8dcff" intensity={10} distance={12} />
     </group>
   );
 }
@@ -352,7 +373,7 @@ export function PatronusScene({ onDone }: { onDone: () => void }) {
   if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expecto Patronum" />;
 
   return (
-    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#040614" }}>
+    <div className="absolute inset-0" style={{ width: "100%", height: "100dvh", overflow: "hidden", background: "#040614" }}>
       <Canvas
         camera={{ position: [0, 1.5, 6], fov: 42 }}
         gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15, powerPreference: "high-performance" }}
