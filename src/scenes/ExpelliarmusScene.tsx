@@ -144,14 +144,17 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
     <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#0a0612" }}>
       <Canvas
         camera={{ position: [0, 1.4, 4], fov: 50 }}
-        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.0, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.25, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
         style={{ width: "100%", height: "100%", display: "block", background: "#0a0612" }}
       >
         <color attach="background" args={["#0a0612"]} />
-        <fog attach="fog" args={["#0a0612", 6, 16]} />
-        <ambientLight intensity={0.15} />
-        <spotLight position={[0, 8, 3]} angle={0.5} penumbra={1} intensity={1.4} color="#ffc890" castShadow />
+        <fog attach="fog" args={["#0a0612", 7, 18]} />
+        <ambientLight intensity={0.35} />
+        <hemisphereLight args={["#ffc890", "#0a0408", 0.4]} />
+        <spotLight position={[0, 8, 3]} angle={0.5} penumbra={1} intensity={2.2} color="#ffc890" castShadow />
+        <pointLight position={[-3, 3, 2]} intensity={1.4} color="#ff8060" distance={8} />
+        <pointLight position={[3, 3, 2]} intensity={1.4} color="#80a0ff" distance={8} />
         <Cam shake={shake} />
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
           <circleGeometry args={[8, 64]} />
@@ -163,7 +166,8 @@ export function ExpelliarmusScene({ onDone }: { onDone: () => void }) {
         {beamT > 0.01 && <SpellBeam from={[2.0, 1.6, 0]} to={[0, 1.5, 0]} color="#80a0ff" t={beamT} />}
         <Shockwave trigger={collision} pos={[0, 0.1, 0]} />
         <GiftBox visible={gift} />
-        <Sparkles count={140} scale={[10, 6, 10]} size={2} speed={0.4} color="#ffb070" opacity={0.6} />
+        <Sparkles count={220} scale={[12, 7, 12]} size={2.4} speed={0.5} color="#ffb070" opacity={0.85} />
+        <Sparkles count={120} scale={[14, 6, 14]} size={1.2} speed={0.2} color="#ffd0a0" opacity={0.55} />
       </Canvas>
 
       <motion.div

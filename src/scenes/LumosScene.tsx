@@ -16,7 +16,7 @@ function Candle({ pos, lit, onLight, index }: { pos: [number, number, number]; l
     flame.current.scale.y = 1 + Math.sin(t * 8) * 0.18;
     flame.current.scale.x = 1 + Math.sin(t * 6) * 0.08;
     flame.current.rotation.y = Math.sin(t * 2) * 0.2;
-    light.current.intensity = lit ? 2 + Math.sin(t * 9) * 0.4 : 0;
+    light.current.intensity = lit ? 3.2 + Math.sin(t * 9) * 0.5 : 0;
   });
   return (
     <group position={pos} onClick={(e) => { e.stopPropagation(); if (!lit) { onLight(); sparkle(1 + index * 0.05); } }}>
@@ -34,7 +34,7 @@ function Candle({ pos, lit, onLight, index }: { pos: [number, number, number]; l
           <meshBasicMaterial color={new THREE.Color(3.5, 2, 0.6)} toneMapped={false} transparent opacity={0.95} />
         </mesh>
       )}
-      <pointLight ref={light} position={[0, 0.4, 0]} color="#ffb060" intensity={0} distance={3.5} />
+      <pointLight ref={light} position={[0, 0.4, 0]} color="#ffb060" intensity={0} distance={5} />
     </group>
   );
 }
@@ -149,13 +149,15 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
     <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#0a0612" }}>
       <Canvas
         camera={{ position: [0, 1.4, 4], fov: 45 }}
-        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.35, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
         style={{ width: "100%", height: "100%", display: "block", background: "#0a0612" }}
       >
         <color attach="background" args={["#0a0612"]} />
-        <fog attach="fog" args={["#0a0612", 5, 14]} />
-        <ambientLight intensity={0.08} color="#ffb070" />
+        <fog attach="fog" args={["#0a0612", 6, 16]} />
+        <ambientLight intensity={0.35} color="#ffb070" />
+        <hemisphereLight args={["#ffc890", "#0a0408", 0.4]} />
+        <spotLight position={[0, 6, 2]} angle={0.6} penumbra={1} intensity={1.4} color="#ffd0a0" />
         <Cam allLit={allLit} />
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.7, 0]} receiveShadow>
           <circleGeometry args={[10, 64]} />
@@ -166,7 +168,8 @@ export function LumosScene({ onDone }: { onDone: () => void }) {
           <Candle key={i} index={i} pos={c.pos} lit={lit[i]} onLight={() => setLit((arr) => arr.map((v, j) => j === i ? true : v))} />
         ))}
         <Fireflies />
-        <Sparkles count={120} scale={[8, 4, 8]} size={1.4} speed={0.2} color="#ffd890" opacity={0.6} />
+        <Sparkles count={200} scale={[10, 5, 10]} size={2} speed={0.25} color="#ffd890" opacity={0.85} />
+        <Sparkles count={100} scale={[14, 6, 14]} size={1} speed={0.1} color="#ffb070" opacity={0.5} />
       </Canvas>
 
       <motion.div
