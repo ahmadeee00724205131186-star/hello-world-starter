@@ -101,16 +101,16 @@ function Fireflies() {
 
 /* Silver Doe — uses shared material instance (cheaper) */
 const silverMat = new THREE.MeshPhysicalMaterial({
-  color: new THREE.Color("#e6f0ff"),
-  emissive: new THREE.Color(1.6, 1.8, 2.2),
-  emissiveIntensity: 1.2,
-  metalness: 0.2,
-  roughness: 0.25,
-  transmission: 0.4,
+  color: new THREE.Color("#f0f6ff"),
+  emissive: new THREE.Color(2.4, 2.6, 3.2),
+  emissiveIntensity: 2.4,
+  metalness: 0.15,
+  roughness: 0.2,
+  transmission: 0.45,
   thickness: 0.6,
   transparent: true,
   opacity: 0,
-  ior: 1.4,
+  ior: 1.45,
   clearcoat: 1,
 });
 
