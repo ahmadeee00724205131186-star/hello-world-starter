@@ -355,21 +355,23 @@ export function PatronusScene({ onDone }: { onDone: () => void }) {
     <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#040614" }}>
       <Canvas
         camera={{ position: [0, 1.5, 6], fov: 42 }}
-        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.9, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
         style={{ width: "100%", height: "100%", display: "block", background: "#040614" }}
       >
         <color attach="background" args={["#040614"]} />
-        <fog attach="fog" args={["#060820", 6, 24]} />
-        <ambientLight intensity={0.08} color="#7088c0" />
-        <directionalLight position={[-6, 12, -4]} intensity={1.2} color="#cfd8ff" castShadow shadow-mapSize={[1024, 1024]} />
-        <hemisphereLight args={["#9fb6ff", "#0a0d18", 0.3]} />
+        <fog attach="fog" args={["#060820", 7, 26]} />
+        <ambientLight intensity={0.22} color="#7088c0" />
+        <directionalLight position={[-6, 12, -4]} intensity={2} color="#cfd8ff" castShadow shadow-mapSize={[1024, 1024]} />
+        <hemisphereLight args={["#9fb6ff", "#0a0d18", 0.6]} />
+        <pointLight position={[0, 6, 0]} intensity={1.2} color="#a8c0ff" distance={20} />
 
         <MoonShafts />
         <Ground />
         <Forest />
         <Fireflies />
-        <Sparkles count={220} scale={[20, 6, 20]} size={1.4} speed={0.15} color="#a8c0ff" opacity={0.55} />
+        <Sparkles count={320} scale={[22, 7, 22]} size={1.8} speed={0.18} color="#a8c0ff" opacity={0.8} />
+        <Sparkles count={160} scale={[28, 6, 28]} size={1} speed={0.1} color="#dfeaff" opacity={0.5} />
 
         <Doe stateRef={stateRef} refForCam={doeRef} />
         <Footprints doeRef={doeRef} stateRef={stateRef} />
