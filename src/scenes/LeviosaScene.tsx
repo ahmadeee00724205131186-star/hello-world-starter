@@ -87,10 +87,10 @@ function Candle({ pos }: { pos: [number, number, number] }) {
         <meshStandardMaterial color="#f7e8c8" roughness={0.6} />
       </mesh>
       <mesh ref={flame} position={[0, 0.22, 0]}>
-        <coneGeometry args={[0.04, 0.14, 8]} />
-        <meshBasicMaterial color={new THREE.Color(3, 1.8, 0.5)} toneMapped={false} transparent opacity={0.95} />
+        <coneGeometry args={[0.05, 0.18, 8]} />
+        <meshBasicMaterial color={new THREE.Color(4, 2.2, 0.7)} toneMapped={false} transparent opacity={1} />
       </mesh>
-      <pointLight color="#ffb060" intensity={1.2} distance={3} position={[0, 0.3, 0]} />
+      <pointLight color="#ffb060" intensity={2.6} distance={4.5} position={[0, 0.3, 0]} />
     </group>
   );
 }
@@ -131,19 +131,16 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
     <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#1a0e0a" }}>
       <Canvas
         camera={{ position: [0, 1.2, 3.5], fov: 45 }}
-        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.35, powerPreference: "high-performance" }}
         dpr={[1, 1.6]}
         style={{ width: "100%", height: "100%", display: "block", background: "#1a0e0a" }}
       >
         <color attach="background" args={["#1a0e0a"]} />
-        <fog attach="fog" args={["#1a0e0a", 4, 12]} />
-        <ambientLight intensity={0.25} color="#f5c890" />
-        <directionalLight position={[2, 4, 3]} intensity={0.8} color="#ffb070" castShadow />
-        <Cam />
-        <mesh position={[0, 0, -4]}>
-          <planeGeometry args={[14, 7]} />
-          <meshStandardMaterial color="#2a1a12" roughness={0.95} />
-        </mesh>
+        <fog attach="fog" args={["#1a0e0a", 5, 14]} />
+        <ambientLight intensity={0.55} color="#f5c890" />
+        <directionalLight position={[2, 4, 3]} intensity={1.4} color="#ffb070" castShadow />
+        <hemisphereLight args={["#ffd0a0", "#1a0a04", 0.5]} />
+        <pointLight position={[0, 3, 2]} intensity={1.2} color="#ffc890" distance={10} />
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]}>
           <planeGeometry args={[16, 10]} />
           <meshStandardMaterial color="#1a0e08" roughness={1} />
@@ -159,7 +156,8 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
         {[[-2, -0.5, 1], [2, -0.3, 0.5], [0, -0.7, -1], [1.5, -0.4, -1.5]].map((p, i) => (
           <Candle key={i} pos={p as [number, number, number]} />
         ))}
-        <Sparkles count={90} scale={[8, 5, 6]} size={1.5} speed={0.2} color="#ffd890" opacity={0.6} />
+        <Sparkles count={180} scale={[10, 6, 8]} size={2.2} speed={0.25} color="#ffd890" opacity={0.85} />
+        <Sparkles count={90} scale={[14, 5, 10]} size={1} speed={0.1} color="#ffb070" opacity={0.6} />
       </Canvas>
 
       <motion.div
