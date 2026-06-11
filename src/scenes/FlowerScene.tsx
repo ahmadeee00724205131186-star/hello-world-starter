@@ -434,7 +434,7 @@ export function FlowerScene({ onEnter }: { onEnter: () => void }) {
   };
 
   return (
-    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#1a0f24" }}>
+    <div className="absolute inset-0" style={{ width: "100%", height: "100dvh", overflow: "hidden", background: "#1a0f24" }}>
       <SkyOverlay phase={phase} />
       <Canvas
         camera={{ position: [0, 0.3, 2.6], fov: 38 }}

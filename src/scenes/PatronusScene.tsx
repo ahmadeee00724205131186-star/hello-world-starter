@@ -352,7 +352,7 @@ export function PatronusScene({ onDone }: { onDone: () => void }) {
   if (!cast) return <WandPrompt onCast={() => setCast(true)} spellLabel="Expecto Patronum" />;
 
   return (
-    <div className="absolute inset-0" style={{ width: "100%", height: "100vh", overflow: "hidden", background: "#040614" }}>
+    <div className="absolute inset-0" style={{ width: "100%", height: "100dvh", overflow: "hidden", background: "#040614" }}>
       <Canvas
         camera={{ position: [0, 1.5, 6], fov: 42 }}
         gl={{ antialias: false, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15, powerPreference: "high-performance" }}
