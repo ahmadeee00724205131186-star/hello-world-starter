@@ -141,6 +141,11 @@ export function LeviosaScene({ onDone }: { onDone: () => void }) {
         <directionalLight position={[2, 4, 3]} intensity={1.4} color="#ffb070" castShadow />
         <hemisphereLight args={["#ffd0a0", "#1a0a04", 0.5]} />
         <pointLight position={[0, 3, 2]} intensity={1.2} color="#ffc890" distance={10} />
+        <Cam />
+        <mesh position={[0, 0, -4]}>
+          <planeGeometry args={[14, 7]} />
+          <meshStandardMaterial color="#2a1a12" roughness={0.95} />
+        </mesh>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]}>
           <planeGeometry args={[16, 10]} />
           <meshStandardMaterial color="#1a0e08" roughness={1} />
